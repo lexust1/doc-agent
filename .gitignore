@@ -22,7 +22,6 @@ __pycache__/
 /models/
 /logs/
 /archive/
-/tests/  
 /docs/ideas/
 /src/doc_agent/prompts/archive/
 

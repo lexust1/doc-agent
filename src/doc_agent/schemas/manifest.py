@@ -21,7 +21,23 @@ class PageStatus(str, Enum):
 
 
 class PageState(BaseModel):
-    """Pydantic model representing the state and artifacts of a single page."""
+    """Pydantic model representing the state and artifacts of a single page.
+
+    Example:
+    
+    A freshly initialised page:
+
+        PageState(status=<PageStatus.PENDING: 'pending'>, complexity_flags=[], paths={}, figures=[])
+
+    A page that has been tagged and contains a figure::
+
+        PageState(
+            status=<PageStatus.TAGGED: 'tagged'>,
+            complexity_flags=['dense_table'],
+            paths={'tagged_md': '03_md_tagged/page_0001.md'},
+            figures=['figures/page_0001_image_1.png']
+        )
+    """
     
     status: PageStatus = Field(
         default=PageStatus.PENDING,
@@ -42,7 +58,45 @@ class PageState(BaseModel):
 
 
 class DocumentManifest(BaseModel):
-    """Pydantic model representing the document's complete lifecycle manifest."""
+    """Pydantic model representing the document's complete lifecycle manifest.
+
+    Example:
+
+    A manifest for a two‑page document after the pipeline has processed
+    the first page (tagged) and the second page (fully cleaned), with
+    aggregation complete:
+
+        DocumentManifest(
+            doc_id='pue_1_3',
+            source_file=Path('data/01_raw/pue_1_3.pdf'),
+            total_pages=2,
+            global_status=<GlobalStatus.COMPLETED: 'completed'>,
+            pages={
+                'page_0001': PageState(
+                    status=<PageStatus.TAGGED: 'tagged'>,
+                    complexity_flags=['ghost_table'],
+                    paths={
+                        'pdf': '01_pages_pdf/page_0001.pdf',
+                        'png': '02_renders_png/page_0001_highres.png',
+                        'tagged_md': '03_md_tagged/page_0001.md'
+                    },
+                    figures=['figures/page_0001_image_1.png']
+                ),
+                'page_0002': PageState(
+                    status=<PageStatus.CLEANED: 'cleaned'>,
+                    complexity_flags=[],
+                    paths={
+                        'pdf': '01_pages_pdf/page_0002.pdf',
+                        'png': '02_renders_png/page_0002_highres.png',
+                        'tagged_md': '03_md_tagged/page_0002.md',
+                        'clean_md': '04_md_clean/page_0002.md'
+                    },
+                    figures=[]
+                )
+            },
+            aggregated_file='05_aggregated/pue_1_3.json'
+        )
+    """
     
     doc_id: str = Field(
         description="Unique identifier for the document."

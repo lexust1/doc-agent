@@ -54,3 +54,8 @@ terraform.tfvars
 *.tfstate
 *.tfstate.backup
 .terraform.tfstate.lock.info
+
+# ============================================================
+# Docker 
+# ============================================================
+/docker/docker-compose.test.yml

@@ -1,0 +1,30 @@
+# docker compose -f docker-compose.yml -f docker-compose.local.yml up -d
+services:
+  qdrant:
+    # Use the official Qdrant Docker image. 
+    image: qdrant/qdrant:latest
+
+    container_name: doc_agent_qdrant
+
+    # Always restart the container unless it was manually stopped.
+    # This ensures Qdrant comes back up after a system reboot or Docker daemon restart.
+    restart: unless-stopped
+
+    # Port mappings:
+    # 6333 – REST API (used by Python qdrant-client for management and search over HTTP).
+    # 6334 – gRPC API (used for high‑performance vector insertion and retrieval).
+    ports:
+      - "6333:6333"
+      - "6334:6334"
+
+    # Persist all Qdrant data (collections, vectors, payloads) to a local directory.
+    volumes:
+      - ./data/qdrant_storage:/qdrant/storage
+
+    # Environment variables for additional configuration.
+    # Setting QDRANT__SERVICE__API_KEY to an empty string disables authentication,
+    # which is fine for local development. For a production deployment,
+    # you would set a strong key and keep it in the .env file.
+    # environment:
+      # Disable API key authentication (open access on localhost).
+      # QDRANT__SERVICE__API_KEY: ""

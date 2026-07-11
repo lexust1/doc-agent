@@ -1,0 +1,44 @@
+# ---- Base image ----
+# Official Python 3.12 slim image keeps the container small.
+FROM python:3.12-slim
+
+# Set the working directory for all subsequent commands.
+WORKDIR /app
+
+# ---- System dependencies ----
+# Install only the tiny system libraries required by ONNX Runtime (libgl1, libglib2.0-0)
+# and curl (needed by the startup script to wait for Qdrant).
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    libgl1 libglib2.0-0 curl \
+    && rm -rf /var/lib/apt/lists/*
+
+# ---- Python dependencies ----
+# Copy only the requirements file first to leverage Docker layer caching.
+# If requirements don't change, the pip install step is skipped on rebuilds.
+COPY docker/requirements.streamlit.txt ./
+RUN pip install --no-cache-dir --upgrade pip \
+    && pip install --no-cache-dir -r requirements.streamlit.txt
+
+# ---- Application code ----
+# Copy the source code, UI, models, and pipelines.
+# (In a production image you might copy only what's needed – but this is fine for development.)
+COPY src/ ./src/
+COPY ui/ ./ui/
+COPY models/ ./models/
+COPY pipelines/ ./pipelines/
+
+# ---- Startup script ----
+# Copy the helper script that waits for Qdrant to become available.
+COPY docker/start_streamlit.sh /app/start_streamlit.sh
+RUN chmod +x /app/start_streamlit.sh
+
+# ---- Environment ----
+# Tell Python where to find the doc_agent package (inside ./src).
+ENV PYTHONPATH=/app/src
+
+# Expose Streamlit's default port (documentation only, doesn't actually publish).
+EXPOSE 8501
+
+# ---- Launch ----
+# Run the startup script instead of streamlit directly.
+CMD ["/app/start_streamlit.sh"]

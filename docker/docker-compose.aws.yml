@@ -1,0 +1,2 @@
+# Cloud mode: no local containers needed. All services run on AWS.
+# Use this empty file for consistency: `docker compose -f docker-compose.yml -f docker-compose.aws.yml up -d`

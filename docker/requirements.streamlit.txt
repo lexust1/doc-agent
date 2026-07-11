@@ -1,0 +1,15 @@
+boto3
+docling
+openai
+qdrant-client
+psycopg[binary,pool]
+pydantic
+pydantic-settings
+pypdfium2
+python-dotenv
+streamlit
+onnxruntime
+tiktoken
+Pillow
+numpy
+transformers

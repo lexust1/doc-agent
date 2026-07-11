@@ -1,0 +1,15 @@
+[theme]
+# The main accent color (Replaces the default red)
+primaryColor = "#1F77B4"
+
+# Background color for the main content area
+backgroundColor = "#0E1117"
+
+# Background color for the sidebar and input boxes
+secondaryBackgroundColor = "#262730"
+
+# Main text color
+textColor = "#FAFAFA"
+
+# Font style
+font = "sans serif"

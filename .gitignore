@@ -44,3 +44,13 @@ project_context.txt
 # ============================================================
 .DS_Store
 Thumbs.db
+
+# ============================================================
+# Terraform
+# ============================================================
+terraform.tfvars
+*.tfvars
+.terraform/
+*.tfstate
+*.tfstate.backup
+.terraform.tfstate.lock.info
